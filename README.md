@@ -48,9 +48,8 @@ s3-project/
 
 ```bash
 aws s3api create-bucket \
-  --bucket my-s3-file-manager-<your-name> \
-  --region us-east-1 \
-  --create-bucket-configuration LocationConstraint=us-east-1
+  --bucket my-s3-file-manager-atulkamble \
+  --region us-east-1
 ```
 
 ---
@@ -58,12 +57,16 @@ aws s3api create-bucket \
 ### 2. 🔒 **Enable Versioning & Encryption**
 
 ```bash
+aws s3api create-bucket \
+  --bucket my-s3-file-manager-atulkamble \
+  --region us-east-1
+atul@MacBook setup % cat s3_bucket_versioning.sh 
 aws s3api put-bucket-versioning \
-  --bucket my-s3-file-manager-<your-name> \
+  --bucket my-s3-file-manager-atulkamble \
   --versioning-configuration Status=Enabled
 
 aws s3api put-bucket-encryption \
-  --bucket my-s3-file-manager-<your-name> \
+  --bucket my-s3-file-manager-atulkamble \
   --server-side-encryption-configuration '{
       "Rules": [
         {
@@ -103,7 +106,7 @@ aws s3api put-bucket-encryption \
 
 ```bash
 aws s3api put-bucket-lifecycle-configuration \
-  --bucket my-s3-file-manager-<your-name> \
+  --bucket my-s3-file-manager-atulkamble \
   --lifecycle-configuration file://lifecycle.json
 ```
 
