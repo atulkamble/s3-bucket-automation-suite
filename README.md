@@ -175,7 +175,7 @@ Create this JSON file as `event-notification.json`:
 {
   "LambdaFunctionConfigurations": [
     {
-      "LambdaFunctionArn": "arn:aws:lambda:us-east-1:<your-account-id>:function:processFileUpload",
+      "LambdaFunctionArn": "arn:aws:lambda:us-east-1:535002879962:function:processFileUpload",
       "Events": ["s3:ObjectCreated:*"]
     }
   ]
