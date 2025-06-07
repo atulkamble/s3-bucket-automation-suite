@@ -1,0 +1,8 @@
+{
+  "LambdaFunctionConfigurations": [
+    {
+      "LambdaFunctionArn": "arn:aws:lambda:us-east-1:535002879962:function:processFileUpload",
+      "Events": ["s3:ObjectCreated:*"]
+    }
+  ]
+}
