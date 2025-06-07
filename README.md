@@ -346,7 +346,7 @@ Attach a policy allowing:
         "Service": "lambda.amazonaws.com"
       },
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::my-s3-file-manager-your-name/*"
+      "Resource": "arn:aws:s3:::my-s3-file-manager-atulkamble/*"
     }
   ]
 }
