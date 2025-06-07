@@ -119,7 +119,7 @@ aws s3api put-bucket-lifecycle-configuration \
 import boto3
 
 s3 = boto3.client('s3')
-bucket_name = "my-s3-file-manager-your-name"
+bucket_name = "my-s3-file-manager-atulkamble"
 
 s3.upload_file("sample.txt", bucket_name, "docs/sample.txt")
 ```
