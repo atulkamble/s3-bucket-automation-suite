@@ -129,6 +129,175 @@ s3.upload_file("sample.txt", bucket_name, "sample.txt")
 
 ### 5. ⚙️ **Setup S3 Event Trigger with Lambda**
 
+
+## 🔧 Step 5.1: **Create the Lambda Function**
+
+**File:** `lambda/lambda_function.py`
+
+```python
+def lambda_handler(event, context):
+    for record in event['Records']:
+        print("New file uploaded:", record['s3']['object']['key'])
+```
+
+---
+
+## 🚀 Step 5.2: **Package Lambda for Deployment**
+
+Zip the Lambda code:
+
+```bash
+cd lambda
+zip lambda_function.zip lambda_function.py
+```
+
+---
+
+## ☁️ Step 5.3: **Create Lambda Function via AWS CLI**
+
+```bash
+aws lambda create-function \
+  --function-name processFileUpload \
+  --runtime python3.9 \
+  --role arn:aws:iam::535002879962:role/lambda-s3-role \
+  --handler lambda_function.lambda_handler \
+  --zip-file fileb://lambda_function.zip \
+  --region us-east-1
+```
+
+---
+
+## 📤 Step 5.4: **Add S3 Event Notification to Trigger Lambda**
+
+Create this JSON file as `event-notification.json`:
+
+```json
+{
+  "LambdaFunctionConfigurations": [
+    {
+      "LambdaFunctionArn": "arn:aws:lambda:us-east-1:<your-account-id>:function:processFileUpload",
+      "Events": ["s3:ObjectCreated:*"]
+    }
+  ]
+}
+```
+
+Then update your S3 bucket notification:
+
+```bash
+aws s3api put-bucket-notification-configuration \
+  --bucket my-s3-file-manager-atulkamble \
+  --notification-configuration file://event-notification.json
+```
+
+---
+
+## 👮 Step 5.5: **Create IAM Role for Lambda**
+
+1. **Create Trust Policy (trust-policy.json):**
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": { "Service": "lambda.amazonaws.com" },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+2. **Create Role:**
+
+```bash
+aws iam create-role \
+  --role-name lambda-s3-role \
+  --assume-role-policy-document file://trust-policy.json
+```
+
+3. **Attach Inline Policy:**
+
+Create `lambda-s3-policy.json`:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+Attach it:
+
+```bash
+aws iam put-role-policy \
+  --role-name lambda-s3-role \
+  --policy-name lambda-s3-policy \
+  --policy-document file://lambda-s3-policy.json
+```
+
+---
+
+## 🪣 Step 5.6: **Add Bucket Policy to Allow Lambda Access**
+
+Update S3 bucket policy:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::my-s3-file-manager-atulkamble/*"
+    }
+  ]
+}
+```
+
+Apply it:
+
+```bash
+aws s3api put-bucket-policy \
+  --bucket my-s3-file-manager-atulkamble \
+  --policy file://bucket-policy.json
+```
+
+---
+
+## ✅ Test Your Setup
+
+Upload a file:
+
+```bash
+aws s3 cp testfile.txt s3://my-s3-file-manager-atulkamble/
+```
+
+Check **CloudWatch Logs** to see if Lambda logged the file upload.
+
+---
+
+Let me know if you'd like to automate these steps in a script or Terraform!
+
+
+
+
 #### Create a Lambda function to process uploads:
 
 ```python
