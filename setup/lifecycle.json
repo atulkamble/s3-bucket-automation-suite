@@ -1,0 +1,19 @@
+# lifecycle.json
+{
+  "Rules": [
+    {
+      "ID": "Archive old files",
+      "Prefix": "",
+      "Status": "Enabled",
+      "Transitions": [
+        {
+          "Days": 30,
+          "StorageClass": "GLACIER"
+        }
+      ],
+      "Expiration": {
+        "Days": 365
+      }
+    }
+  ]
+}
